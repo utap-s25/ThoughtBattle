@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "799936274653",
+    "project_id": "thoughtbattle-a098b",
+    "storage_bucket": "thoughtbattle-a098b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:799936274653:android:d506eef66b9e57e6053b34",
+        "android_client_info": {
+          "package_name": "com.example.thoughtbattle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "799936274653-h0vu893ke6kkuld1krvk9uomhc2gnnln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.thoughtbattle",
+            "certificate_hash": "fd7b071901ee4400c805dbcaac010bea0b5a3057"
+          }
+        },
+        {
+          "client_id": "799936274653-be4epcnu5vq8cjot7452b65pkn2o4hpn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3N4eWV6QGuV0LalCkc5nGHdx6Y5IHXR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "799936274653-be4epcnu5vq8cjot7452b65pkn2o4hpn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
