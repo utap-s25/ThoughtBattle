@@ -16,6 +16,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven (url = "https://repo.sendbird.com/public/maven" )
     }
 }
 
