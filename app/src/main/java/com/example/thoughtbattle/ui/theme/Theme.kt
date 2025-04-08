@@ -1,5 +1,5 @@
 package com.example.thoughtbattle.ui.theme
-
+/*
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -56,3 +56,4 @@ fun ThoughtBattleTheme(
         content = content
     )
 }
+*/
