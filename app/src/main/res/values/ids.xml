@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="sideBEditText" type="id" />
+    <item name="debateTitleEditText" type="id" />
+    <item name="sideAEditText" type="id" />
+</resources>
