@@ -17,6 +17,8 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven (url = "https://repo.sendbird.com/public/maven" )
+        maven { setUrl("https://jitpack.io") }
+        maven { setUrl("https://repo.sendbird.com/public/maven") }
     }
 }
 
