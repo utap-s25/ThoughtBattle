@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment android:id="@+id/homeFragment"
+        android:name="com.sendbird.uikit.fragments.OpenChannelListFragment"
+        android:label="Debates">
+        <action
+            android:id="@+id/action_create_channel"
+            app:destination="@id/createDebateFragment"/>
+
+</fragment>
+
+    <fragment android:id="@+id/createDebateFragment"
+        android:name="com.example.thoughtbattle.ui.main.createDebate.CreateDebateFragment"
+        android:label="Create Debate"
+        tools:layout="@layout/fragment_create_debate"/>
+
+
+</navigation>

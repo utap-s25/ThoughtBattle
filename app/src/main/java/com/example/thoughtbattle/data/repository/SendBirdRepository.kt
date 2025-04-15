@@ -4,13 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.thoughtbattle.BuildConfig
+import com.example.thoughtbattle.ui.main.DebateListFragment
 import com.sendbird.android.channel.OpenChannel
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.handler.InitResultHandler
 import com.sendbird.android.params.OpenChannelCreateParams
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter
+import com.sendbird.uikit.fragments.OpenChannelListFragment
 import com.sendbird.uikit.interfaces.UserInfo
+import com.sendbird.uikit.interfaces.providers.OpenChannelListFragmentProvider
+import com.sendbird.uikit.providers.FragmentProviders
 
 object SendBirdRepository {
     private const val APP_ID = BuildConfig.SENDBIRD_APP_ID
@@ -39,11 +43,13 @@ object SendBirdRepository {
                     }
 
                     override fun getNickname(): String {
-                        return ""
+                        val userName = sharedPreferences.getString("user_nickname", "") ?: ""
+                        return userName
                     }
 
                     override fun getProfileUrl(): String {
-                        return ""
+                        val userProfile = sharedPreferences.getString("user_profile_pic", "") ?: ""
+                        return userProfile
                     }
                 }
             }
@@ -60,12 +66,17 @@ object SendBirdRepository {
 
                     override fun onInitSucceed() {
                         Log.d("SendBirdRepository", "onInitSucceed")
-                        val userId = sharedPreferences.getString("user_id", "") ?: ""
-                        connect(userId)
+
                     }
                 }
             }
         }, context)
+        FragmentProviders.openChannelList = OpenChannelListFragmentProvider { args ->
+            OpenChannelListFragment.Builder().withArguments(args).setCustomFragment(DebateListFragment())
+                .setUseHeader(false).setUseHeaderRightButton(false)
+                .build()
+        }
+
     }
 
     fun connect(userId: String) {

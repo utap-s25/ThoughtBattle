@@ -47,7 +47,6 @@ DefaultLifecycleObserver, FirebaseAuth.AuthStateListener {
             val user = User(firebaseUser.uid, firebaseUser.displayName ?: "", firebaseUser.email ?: "", firebaseUser.photoUrl.toString())
 
             liveUser.postValue(user)
-            SendBirdRepository.connect(user.id)
         }
 
 
@@ -75,7 +74,7 @@ DefaultLifecycleObserver, FirebaseAuth.AuthStateListener {
 
     fun login(){
         if (user() == null && !pendingLogin){
-            val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build())
+            val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build(),AuthUI.IdpConfig.GoogleBuilder().build())
             val signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers).setLogo(R.drawable.thoughtbatle)
@@ -89,5 +88,6 @@ DefaultLifecycleObserver, FirebaseAuth.AuthStateListener {
     fun logout() {
         if(user() == null) return
         Firebase.auth.signOut()
+        login()
     }
     }
