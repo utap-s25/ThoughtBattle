@@ -4,7 +4,7 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-// Secure local.properties access
+
 val sendbirdAppId: String by project
 
 android {
@@ -22,7 +22,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         android.buildFeatures.buildConfig = true
 
-        // Secure SendBird App ID
+
         buildConfigField("String", "SENDBIRD_APP_ID", "\"$sendbirdAppId\"")
     }
 
@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.androidx.runtime.saved.instance.state)
     implementation(libs.androidx.media3.common.ktx)
     implementation ("androidx.activity:activity-ktx:1.8.2")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
 
     // Testing

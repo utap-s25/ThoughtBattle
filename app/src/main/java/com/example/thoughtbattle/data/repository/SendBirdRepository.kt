@@ -1,80 +1,99 @@
 package com.example.thoughtbattle.data.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.example.thoughtbattle.BuildConfig
-import com.sendbird.android.SendbirdChat
+import com.sendbird.android.channel.OpenChannel
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.handler.InitResultHandler
-import com.sendbird.android.params.InitParams
 import com.sendbird.android.params.OpenChannelCreateParams
-import com.sendbird.android.params.OpenChannelListQueryParams
-import com.sendbird.android.channel.OpenChannel
+import com.sendbird.uikit.SendbirdUIKit
+import com.sendbird.uikit.adapter.SendbirdUIKitAdapter
+import com.sendbird.uikit.interfaces.UserInfo
 
-object SendBirdManager {
+object SendBirdRepository {
     private const val APP_ID = BuildConfig.SENDBIRD_APP_ID
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var context: Context
 
     fun initialize(context: Context) {
-        SendbirdChat.init(
-            InitParams(APP_ID, context, true),
-            object : InitResultHandler {
-                override fun onInitFailed(e: SendbirdException) {
+        this.context = context
+        sharedPreferences = context.getSharedPreferences("sendbird", Context.MODE_PRIVATE)
 
-                }
+        SendbirdUIKit.init(object : SendbirdUIKitAdapter {
+            override fun getAppId(): String {
+                return APP_ID
+            }
 
-                override fun onInitSucceed() {
+            override fun getAccessToken(): String {
+                return ""
+            }
 
-                }
+            override fun getUserInfo(): UserInfo {
+                return object : UserInfo {
+                    override fun getUserId(): String {
+                        val userId = sharedPreferences.getString("user_id", "") ?: ""
+                        Log.d("SendBirdRepository", "getUserId: $userId")
+                        return userId
+                    }
 
-                override fun onMigrationStarted() {
+                    override fun getNickname(): String {
+                        return ""
+                    }
 
+                    override fun getProfileUrl(): String {
+                        return ""
+                    }
                 }
             }
-        )
+
+            override fun getInitResultHandler(): InitResultHandler {
+                return object : InitResultHandler {
+                    override fun onMigrationStarted() {
+                        Log.d("SendBirdRepository", "onMigrationStarted")
+                    }
+
+                    override fun onInitFailed(e: SendbirdException) {
+                        Log.e("SendBirdRepository", "onInitFailed", e)
+                    }
+
+                    override fun onInitSucceed() {
+                        Log.d("SendBirdRepository", "onInitSucceed")
+                        val userId = sharedPreferences.getString("user_id", "") ?: ""
+                        connect(userId)
+                    }
+                }
+            }
+        }, context)
     }
 
-    fun connect(userId: String, onSuccess: () -> Unit, onError: (Exception) -> Unit) {
-        SendbirdChat.connect(userId) { user, e ->
+    fun connect(userId: String) {
+        SendbirdUIKit.connect{userId, e  ->
             if (e != null) {
-                onError(Exception("SendBird connection failed: ${e.message}"))
+                Log.e("SendBirdRepository", "Connect failed", e)
                 return@connect
             }
-            onSuccess()
+            Log.d("SendBirdRepository", "Connect succeeded: ${userId}")
         }
     }
 
     fun disconnect() {
-        SendbirdChat.disconnect(null)
+        SendbirdUIKit.disconnect(null)
     }
 
-    fun createOpenChannel(name: String, callback: (String) -> Unit) {
+    fun createOpenChannel(name: String, callback: (String) -> Unit, userId: String) {
         val params = OpenChannelCreateParams().apply {
             this.name = name
-            this.operatorUserIds = listOf(SendbirdChat.currentUser?.userId ?: "")
+            this.operatorUserIds = listOf(userId)
         }
 
         OpenChannel.createChannel(params) { channel, e ->
             if (e != null) {
-                Log.e("SendBirdManager", "Channel creation failed", e)
+                Log.e("SendBirdRepository", "Channel creation failed", e)
                 return@createChannel
             }
             callback(channel?.url ?: "")
-        }
-    }
-
-    fun getOpenChannels(callback: (List<OpenChannel>) -> Unit) {
-        val params = OpenChannelListQueryParams().apply {
-            limit = 100 //we can change that later lol
-        }
-
-        val listQuery = OpenChannel.createOpenChannelListQuery(params)
-        listQuery.next { channels, e ->
-            if (e != null) {
-                Log.e("SendBirdManager", "Channel list query failed", e)
-                callback(emptyList())
-                return@next
-            }
-            callback(channels ?: emptyList())
         }
     }
 }

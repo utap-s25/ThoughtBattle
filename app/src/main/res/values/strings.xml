@@ -6,4 +6,43 @@
     <string name="update_name">Update Name</string>
     <string name="logout">Logout</string>
     <string name="ThoughtBattle" />
+    <string name="sb_text_report">Report Message</string>
+    <string name="sb_text_report_message">Select Report Category</string>
+    <string name="sb_text_report_success">Report submitted successfully</string>
+    <string name="sb_text_report_failed">Failed to submit report</string>
+    <string-array name="report_categories">
+        <item>Suspicious</item>
+        <item>Harassing</item>
+        <item>Spam</item>
+        <item>Inappropriate</item>
+    </string-array>
+    <string name="text_report">Report</string>
+    <string name="text_title_moderation">Moderation Feature Customization</string>
+    <string name="text_title_moderation_group_channel">Moderation feature for Group Channel</string>
+    <string name="text_title_moderation_open_channel">Moderation feature for Open Channel</string>
+    <string name="text_report_suspicious">Suspicious</string>
+    <string name="text_report_harassing">Harassing</string>
+    <string name="text_report_spam">Spam</string>
+    <string name="text_report_inappropriate">Inappropriate</string>
+    <string name="text_report_error">Couldn\&#39;t report message.</string>
+    <string name="text_choose_report_category_dialog">Choose the report category</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_active_description"> Recently Active Debates! </string>
+    <string name="text_new_description"> Recently Created Debates! </string>
+    <string name="text_active"> Active Debates </string>
+    <string name="text_new"> New Debates </string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="side_b_cannot_be_empty">Please Declare a title for Side B</string>
+    <string name="side_a_cannot_be_empty">Please declare a title for side A</string>
+    <string name="title_cannot_be_empty">Please declare title for debate</string>
+    <string name="submit">submit</string>
+    <string name="ex_oranges">Ex. Oranges</string>
+    <string name="side_b">Side B</string>
+    <string name="ex_apples">Ex. Apples</string>
+    <string name="side_a">Side A</string>
+    <string name="declare_your_sides">Declare your sides!</string>
+    <string name="ex_apples_vs_oranges">Ex. Apples vs Oranges</string>
+    <string name="title_your_debate">Title your Debate</string>
+    <string name="create_a_debate">Create a Debate</string>
+
 </resources>

@@ -1,26 +1,28 @@
 package com.example.thoughtbattle
 
 import android.app.Application
+import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import com.example.thoughtbattle.data.repository.SendBirdRepository
+import com.example.thoughtbattle.ui.auth.AuthUser
 import com.google.firebase.FirebaseApp
-import com.sendbird.android.*
-import com.sendbird.android.exception.SendbirdException
-import com.sendbird.android.handler.InitResultHandler
-import com.sendbird.android.params.InitParams
 
 //apparently having this class will be really important since i think we will need a global context?? yeah lol
 class ThoughtBattle : Application() {
+    private lateinit var authUser: AuthUser
+
     override fun onCreate() {
         super.onCreate()
 //we initialize the firebase app and sendbird app. this seems like best place to do it
 
-        FirebaseApp.initializeApp(this)
 
-        val params = InitParams(BuildConfig.SENDBIRD_APP_ID, this, false)
-        SendbirdChat.init(params, object : InitResultHandler {
-            override fun onMigrationStarted() {}
-            override fun onInitFailed(e: SendbirdException) {}
-            override fun onInitSucceed() {}
-        })
 
+
+
+    }
+    fun Context.isDarkThemeOn(): Boolean {
+        return resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
     }
 }

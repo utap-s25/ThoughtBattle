@@ -22,4 +22,7 @@
     <style name="Theme.FirebaseAuth.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:fitsSystemWindows">true</item>
     </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
 </resources>

@@ -1,5 +1,5 @@
 package com.example.thoughtbattle.data.model
-// Debate.kt
+
 data class Debate(
     val id: String = "",
     val title: String = "",
