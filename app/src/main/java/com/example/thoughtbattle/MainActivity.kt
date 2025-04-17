@@ -1,6 +1,5 @@
 package com.example.thoughtbattle
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -11,19 +10,14 @@ import androidx.core.view.MenuProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.thoughtbattle.data.model.isInvalid
-import com.example.thoughtbattle.data.repository.SendBirdRepository
 import com.example.thoughtbattle.databinding.ActivityMainBinding
 import com.example.thoughtbattle.ui.MainViewModel
 import com.example.thoughtbattle.ui.auth.AuthUser
-import com.example.thoughtbattle.ui.main.DebateListFragment
-import com.example.thoughtbattle.ui.main.createDebate.CreateDebateFragment
-import com.google.firebase.FirebaseApp
 
 
-    class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
         private lateinit var binding: ActivityMainBinding
         private lateinit var authUser: AuthUser
         private val viewModel: MainViewModel by viewModels()
@@ -53,12 +47,12 @@ import com.google.firebase.FirebaseApp
                         }
 
                         R.id.action_personal -> {
-                            // Handle personal
+
                             true
                         }
 
                         R.id.action_settings -> {
-                            // Handle settings
+
                             true
                         }
 
@@ -68,7 +62,7 @@ import com.google.firebase.FirebaseApp
                         }
 
                         R.id.action_profile -> {
-                            // Handle profile
+
                             true
                         }
 
@@ -84,18 +78,17 @@ import com.google.firebase.FirebaseApp
           setContentView(binding.root)
             setSupportActionBar(binding.addToolbar)
             val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
+                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             navController = navHostFragment.navController
             val appBarConfiguration = AppBarConfiguration(navController.graph)
             setupActionBarWithNavController(navController, appBarConfiguration)
             initToolbar()
-          //  FirebaseApp.initializeApp(this)
-           // SendBirdRepository.initialize(this)
+
+
         }
 
-        override fun onSupportNavigateUp(): Boolean {
-            return navController.navigateUp() || super.onSupportNavigateUp()
-        }
+
+
 
         override fun onStart() {
             super.onStart()

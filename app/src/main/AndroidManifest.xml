@@ -16,11 +16,6 @@
         android:theme="@style/Theme.ThoughtBattle"
         tools:targetApi="34">
 
-        <activity
-            android:name=".ui.main.HomeActivity"
-            android:exported="true">
-
-        </activity>
 
         <activity
             android:name=".MainActivity"
@@ -31,10 +26,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.main.createDebate.CreateDebateFragment">
+
+
+        <activity android:name=".ui.main.OpenChannelListWrapperActivity">
 
         </activity>
-
 
     </application>
 

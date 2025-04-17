@@ -70,7 +70,7 @@ dependencies {
 
     // SendBird
     implementation("com.sendbird.sdk:sendbird-chat:4.24.0")
-    implementation("com.sendbird.sdk:uikit:3.+")
+    implementation ("com.sendbird.sdk:uikit:3.23.0")
 
 
     // AndroidX
