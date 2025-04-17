@@ -24,17 +24,14 @@ data class User(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) {
-    fun toSendbirdAttributes(): Map<String, String> {
-        return mapOf(
-            "email" to email,
-            "debateHistory" to debateHistory.joinToString(","),
-            "createdAt" to createdAt.toString()
-        )
+    init{
+        FirebaseRepository.createUser(this)
     }
+
 }
 
 
-// Extension function to convert to Sendbird User
+
 const val invalidUserUid = "-1"
 
 fun User.isInvalid(): Boolean {
