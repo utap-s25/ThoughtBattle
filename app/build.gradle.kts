@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,7 +7,14 @@ plugins {
 }
 
 
-val sendbirdAppId: String by project
+val secretsFile = rootProject.file("local.properties")
+val properties = Properties()
+properties.load(secretsFile.inputStream())
+
+val sendbirdAppId = properties.getProperty("sendbirdAppId")
+val wikimediaClientId = properties.getProperty("wikimediaClientId")
+val wikimediaClientSecret = properties.getProperty("wikimediaClientSecret")
+val wikimediaAccessToken = properties.getProperty("wikimediaAccessToken")
 
 android {
     namespace = "com.example.thoughtbattle"
@@ -23,7 +32,11 @@ android {
         android.buildFeatures.buildConfig = true
 
 
-        buildConfigField("String", "SENDBIRD_APP_ID", "\"$sendbirdAppId\"")
+        buildConfigField("String", "SENDBIRD_APP_ID", sendbirdAppId)
+        buildConfigField("String", "WIKIMEDIA_CLIENT_ID", wikimediaClientId)
+        buildConfigField("String", "WIKIMEDIA_CLIENT_SECRET", wikimediaClientSecret)
+        buildConfigField("String", "WIKIMEDIA_ACCESS_TOKEN", wikimediaAccessToken)
+
     }
 
     buildTypes {
@@ -95,4 +108,8 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+
+    //Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 }
