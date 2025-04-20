@@ -1,9 +1,7 @@
-<!-- nav_graph.xml -->
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
+    android:id="@+id/default_nav_host"
     app:startDestination="@id/homeFragment">
 
     <fragment
@@ -12,15 +10,51 @@
         android:label="Debates">
         <argument
             android:name="KEY_USE_HEADER"
-            android:defaultValue="false"/>
+            android:defaultValue="false" />
         <action
             android:id="@+id/action_create_channel"
-            app:destination="@id/createDebateFragment"/>
+            app:destination="@id/createDebateFragment" />
+        <action
+            android:id="@+id/action_home_to_debate_chat"
+            app:destination="@id/debateFragment"/>
+        <argument
+            android:name="KEY_CHANNEL_URL"
+            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/createDebateFragment"
         android:name="com.example.thoughtbattle.ui.main.createDebate.CreateDebateFragment"
         android:label="Create Debate"
-        tools:layout="@layout/fragment_create_debate"/>
+        tools:layout="@layout/fragment_create_debate" >
+        <action
+            android:id="@+id/action_create_debate_to_chat"
+            app:destination="@id/debateFragment" > <argument
+            android:name="KEY_CHANNEL_URL"
+            app:argType="string" /> </action>
+
+    </fragment>
+    <fragment
+        android:id="@+id/debateFragment"
+        android:name="com.example.thoughtbattle.ui.debate.DebateChatFragment"
+        android:label="Debate">
+        <action
+            android:id="@+id/action_debate_settings"
+            app:destination="@+id/debateSettingsFragment" />
+        <argument
+            android:name="KEY_CHANNEL_URL"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/debateSettingsFragment"
+        android:name="com.example.thoughtbattle.ui.debate.information.DebateSettingsFragment"
+        android:label="Debate Settings">
+        <action
+            android:id="@+id/action_debate_chat"
+            app:destination="@id/debateFragment"/>
+        <argument
+            android:name="KEY_CHANNEL_URL"
+            app:argType="string" />
+    </fragment>
 </navigation>

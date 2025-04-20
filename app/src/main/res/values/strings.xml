@@ -44,5 +44,7 @@
     <string name="ex_apples_vs_oranges">Ex. Apples vs Oranges</string>
     <string name="title_your_debate">Title your Debate</string>
     <string name="create_a_debate">Create a Debate</string>
+    <string name="back_button">back button</string>
+    <string name="info_button">information</string>
 
 </resources>

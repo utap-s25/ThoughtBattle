@@ -1,40 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/listHeaderLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/background_50"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
+    <!-- Header Row (Back + Title + Info) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/sb_size_10"
+        android:paddingBottom="@dimen/sb_size_10">
 
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_marginStart="@dimen/sb_size_16"
+            android:padding="@dimen/sb_size_4"
+            android:contentDescription="@string/back_button"/>
+
+        <!-- Centered Title -->
         <TextView
-            android:id="@+id/sideA"
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="16sp"
-            android:textStyle="italic"/>
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textAlignment="center"
+            android:textAppearance="@style/SendbirdButtonOnLight02"
+            android:layout_marginHorizontal="@dimen/sb_size_8"/>
 
-        <TextView
-            android:id="@+id/sideB"
-            android:layout_width="0dp"
+        <!-- Info Button -->
+        <ImageView
+            android:id="@+id/infoButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="16sp"
-            android:textStyle="italic"/>
-
+            android:src="@drawable/ic_info"
+            android:layout_marginEnd="@dimen/sb_size_16"
+            android:padding="@dimen/sb_size_4"
+            android:contentDescription="@string/info_button"/>
     </LinearLayout>
 
+    <!-- Debate Sides Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/sb_size_10">
+
+        <!-- Side A Title -->
+        <TextView
+            android:id="@+id/sideATitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textAlignment="center"
+            android:textAppearance="@style/SendbirdButtonOnLight02"
+            android:layout_marginStart="@dimen/sb_size_16"/>
+
+        <!-- Side B Title -->
+        <TextView
+            android:id="@+id/sideBTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textAlignment="center"
+            android:textAppearance="@style/SendbirdButtonOnLight02"
+            android:layout_marginEnd="@dimen/sb_size_16"/>
+    </LinearLayout>
+
+    <!-- Bottom Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_1"
+        android:background="@color/onlight_text_disabled"/>
 </LinearLayout>

@@ -16,8 +16,11 @@ import com.sendbird.uikit.fragments.OpenChannelListFragment
 import com.sendbird.uikit.modules.OpenChannelListModule
 
 import androidx.activity.viewModels
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.example.thoughtbattle.MainActivity
+import com.sendbird.android.channel.OpenChannel
 import com.sendbird.uikit.modules.components.ChannelSettingsMenuComponent
 
 /**
@@ -30,24 +33,13 @@ class DebateListFragment : OpenChannelListFragment() {
 
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
 
+
+    override fun onItemClicked(view: View, position: Int, channel: OpenChannel) {
+       // findNavController().navigate(R.id.action_debate_chat, bundleOf("KEY_CHANNEL_URL" to channel.url))
+        val bundle = bundleOf("KEY_CHANNEL_URL" to channel.url)
+        findNavController().navigate(R.id.action_home_to_debate_chat, bundle)
     }
-
-
-
-/*
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_create_channel && context != null) {
-            val intent = Intent(context, CreateDebateActivity::class.java)
-            startActivity(intent)
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }*/
-
 
     override fun onResume() {
         super.onResume()

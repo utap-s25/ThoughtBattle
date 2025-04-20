@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.example.thoughtbattle.BuildConfig
+import com.example.thoughtbattle.data.model.Debate
 import com.example.thoughtbattle.ui.main.DebateListFragment
 import com.sendbird.android.channel.OpenChannel
 import com.sendbird.android.exception.SendbirdException
@@ -15,9 +16,12 @@ import com.sendbird.uikit.fragments.OpenChannelListFragment
 import com.sendbird.uikit.interfaces.UserInfo
 import com.sendbird.uikit.interfaces.providers.OpenChannelListFragmentProvider
 import com.sendbird.uikit.providers.FragmentProviders
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resumeWithException
+
 
 object SendBirdRepository {
-    private const val APP_ID = BuildConfig.SENDBIRD_APP_ID
+    private  val APP_ID = BuildConfig.SENDBIRD_APP_ID
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var context: Context
 
@@ -106,5 +110,51 @@ object SendBirdRepository {
             }
             callback(channel?.url ?: "")
         }
+    }suspend fun createOpenChannel(name: String, userId: String): String {
+        return suspendCancellableCoroutine { continuation ->
+            val params = OpenChannelCreateParams().apply {
+                this.name = name
+                this.operatorUserIds = listOf(userId)
+            }
+
+            OpenChannel.createChannel(params) { channel, e ->
+                if (e != null) {
+                    Log.e("SendBirdRepository", "Channel creation failed", e)
+                    continuation.resumeWithException(e)
+                    return@createChannel
+                }
+                continuation.resume(channel?.url ?: "") {
+                    // Handle cancellation
+                }
+            }
+        }
     }
+    fun updateChannelMetaData(channelUrl: String, debate: Debate, callback: (Boolean, String?) -> Unit) {
+        OpenChannel.getChannel(channelUrl) { channel, e ->
+            if (e != null) {
+                callback(false, "Channel retrieval failed: ${e.message}")
+                return@getChannel
+            }
+
+            val metaData = mapOf(
+                "debate_title" to debate.title,
+                "side_a" to debate.sideA,
+                "side_b" to debate.sideB,
+                "side_a_info" to debate.sideAInfo,
+                "side_b_info" to debate.sideBInfo,
+                "correlation_info" to debate.correlationInfo,
+                "creator_id" to debate.creatorId,
+                "created_at" to debate.createdAt.toString()
+            )
+
+            channel?.createMetaData(metaData as Map<String, String>) { _, error ->
+                if (error != null) {
+                    callback(false, "Metadata creation failed: ${error.message}")
+                } else {
+                    callback(true, "Metadata created successfully")
+                }
+            }
+        }
+    }
+
 }

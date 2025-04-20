@@ -6,7 +6,6 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-
 val secretsFile = rootProject.file("local.properties")
 val properties = Properties()
 properties.load(secretsFile.inputStream())
@@ -29,14 +28,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        android.buildFeatures.buildConfig = true
+        buildFeatures.buildConfig = true
 
-
-        buildConfigField("String", "SENDBIRD_APP_ID", sendbirdAppId)
-        buildConfigField("String", "WIKIMEDIA_CLIENT_ID", wikimediaClientId)
-        buildConfigField("String", "WIKIMEDIA_CLIENT_SECRET", wikimediaClientSecret)
-        buildConfigField("String", "WIKIMEDIA_ACCESS_TOKEN", wikimediaAccessToken)
-
+        buildConfigField("String", "SENDBIRD_APP_ID", "\"$sendbirdAppId\"")
+        buildConfigField("String", "WIKIMEDIA_CLIENT_ID", "\"$wikimediaClientId\"")
+        buildConfigField("String", "WIKIMEDIA_CLIENT_SECRET", "\"$wikimediaClientSecret\"")
+        buildConfigField("String", "WIKIMEDIA_ACCESS_TOKEN", "\"$wikimediaAccessToken\"")
     }
 
     buildTypes {
@@ -65,15 +62,14 @@ android {
 
 dependencies {
     // Kotlin
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10")
     implementation(libs.androidx.annotation)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.runtime.saved.instance.state)
     implementation(libs.androidx.media3.common.ktx)
-    implementation ("androidx.activity:activity-ktx:1.8.2")
-    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation ("androidx.activity:activity-ktx")
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.firebase.appcheck.ktx)
+    implementation(libs.firebase.appcheck.debug)
 
 
     // Testing
@@ -94,14 +90,12 @@ dependencies {
     implementation("com.google.android.material:material:1.9.0")
 
     // Firebase (BOM)
-    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-auth")
-    implementation ("com.google.android.gms:play-services-auth:20.7.0")
-    // Import the FirebaseUI
+    implementation("com.google.firebase:firebase-vertexai")
     implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
 
 
