@@ -58,7 +58,7 @@ class ThoughtBattle : Application() {
 
         }
 
-        ModuleProviders.openChannel = OpenChannelModuleProvider { context, _ -> .
+        ModuleProviders.openChannel = OpenChannelModuleProvider { context, _ ->
             val module = OpenChannelModule(context)
 
             module.setHeaderComponent(DebateChatHeader())
