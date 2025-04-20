@@ -50,7 +50,8 @@ class CreateDebateFragment : Fragment(R.layout.fragment_create_debate) {
                     title, sideA, sideB,
                     onSuccess = { debate ->
 
-                        OpenChannelActivity.newIntent(context, debate.channelUrl)
+                       //go back to debate list fragment for now since we're having trouble trying to load the created chat lol
+                        findNavController().navigate(R.id.action_create_debate_to_home)
                     },
                     onError = { errorMessage ->
                         Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()

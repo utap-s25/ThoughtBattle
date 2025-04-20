@@ -32,6 +32,8 @@
             app:destination="@id/debateFragment" > <argument
             android:name="KEY_CHANNEL_URL"
             app:argType="string" /> </action>
+        <action android:id="@+id/action_create_debate_to_home"
+            app:destination="@id/homeFragment" />
 
     </fragment>
     <fragment
@@ -44,6 +46,7 @@
         <argument
             android:name="KEY_CHANNEL_URL"
             app:argType="string" />
+
     </fragment>
 
     <fragment
