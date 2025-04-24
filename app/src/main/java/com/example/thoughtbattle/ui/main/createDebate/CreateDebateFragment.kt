@@ -14,6 +14,7 @@ import com.example.thoughtbattle.R
 import com.example.thoughtbattle.data.model.Debate
 import com.example.thoughtbattle.databinding.FragmentCreateDebateBinding
 import com.example.thoughtbattle.ui.MainViewModel
+import com.google.android.material.chip.Chip
 import com.sendbird.uikit.activities.OpenChannelActivity
 import kotlinx.coroutines.launch
 
@@ -21,37 +22,50 @@ import kotlinx.coroutines.launch
 class CreateDebateFragment : Fragment(R.layout.fragment_create_debate) {
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentCreateDebateBinding
+    private lateinit var debateTopic: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentCreateDebateBinding.bind(requireView())
+      initDebateTopics()
         initSubmitButton()
     }
+   private fun initDebateTopics(){
+        binding.debateTopics.setOnCheckedStateChangeListener { group, checkedIds ->
+            val selectedChip = group.findViewById<Chip>(checkedIds[0])
+            val selectedTopic = selectedChip.text.toString()
+            debateTopic = selectedTopic
 
+
+
+
+        }
+   }
     private fun initSubmitButton() {
         binding.debateSubmitButton.setOnClickListener {
-            val title = binding.titleET.text.toString()
+            val title = binding.titleET.editText?.text.toString()
             if (title.isEmpty()) {
                 Toast.makeText(activity, getString(R.string.title_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val sideA = binding.sideAEditText.text.toString()
+            val sideA = binding.sideAEditText.editText?.text.toString()
             if (sideA.isEmpty()) {
                 Toast.makeText(activity, getString(R.string.side_a_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val sideB = binding.sideBEditText.text.toString()
+            val sideB = binding.sideBEditText.editText?.text.toString()
             if (sideB.isEmpty()) {
                 Toast.makeText(activity, getString(R.string.side_b_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            binding.indeterminateBar.visibility = View.VISIBLE
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.createnewDebate(
-                    title, sideA, sideB,
+                    title, sideA, sideB,debateTopic,
                     onSuccess = { debate ->
 
                        //go back to debate list fragment for now since we're having trouble trying to load the created chat lol
-                        findNavController().navigate(R.id.action_create_debate_to_home)
+                        findNavController().navigate(R.id.action_create_debate_to_chat, bundleOf("channelUrl" to debate.channelUrl))
                     },
                     onError = { errorMessage ->
                         Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()

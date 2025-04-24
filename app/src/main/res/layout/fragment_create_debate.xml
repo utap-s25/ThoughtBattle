@@ -1,110 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/cardview_light_background"
     tools:context=".ui.main.createDebate.CreateDebateFragment">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/indeterminateBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/purple_500"
+        android:visibility="gone"
+        />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/addToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <TextView
-                android:id="@+id/addTitle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:text="@string/create_a_debate"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </androidx.appcompat.widget.Toolbar>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="0dp"
+        android:layout_marginTop="8dp"
+     >
 
-        <TextView
-            android:id="@+id/debateTitle"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_your_debate"
-            android:textSize="24sp"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
-        <EditText
-            android:id="@+id/titleET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/ex_apples_vs_oranges"
-            android:inputType="text"
-            app:layout_constraintTop_toBottomOf="@id/debateTitle" />
+            <!-- Debate Title Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/debateTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_your_debate"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/declareSides"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/declare_your_sides"
-            app:layout_constraintTop_toBottomOf="@id/titleET" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/titleET"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ex_apples_vs_oranges"
+                app:layout_constraintTop_toBottomOf="@id/debateTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:counterEnabled="true"
+                app:counterMaxLength="100"
+                android:layout_marginBottom="24dp">
 
-        <TextView
-            android:id="@+id/sideATitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/side_a"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/declareSides" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:maxLength="100"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/sideAEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/ex_apples"
-            android:inputType="text"
-            app:layout_constraintTop_toBottomOf="@id/sideATitle" />
+            <!-- Sides Declaration Section -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/declareSides"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/declare_your_sides"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                app:layout_constraintTop_toBottomOf="@id/titleET"
+                android:layout_marginBottom="16dp"/>
 
-        <TextView
-            android:id="@+id/sideBTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/side_b"
-            android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sideAEditText" />
+            <!-- Side A Input -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sideATitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/side_a"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                app:layout_constraintTop_toBottomOf="@id/declareSides"
+                android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/sideBEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/ex_oranges"
-            android:inputType="text"
-            app:layout_constraintTop_toBottomOf="@id/sideBTitle" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/sideAEditText"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ex_apples"
+                app:layout_constraintTop_toBottomOf="@id/sideATitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
+                android:layout_marginBottom="16dp">
 
-        <Button
-            android:id="@+id/debateSubmitButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/submit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sideBEditText" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:maxLength="50"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Side B Input -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sideBTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/side_b"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                app:layout_constraintTop_toBottomOf="@id/sideAEditText"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/sideBEditText"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/ex_oranges"
+                app:layout_constraintTop_toBottomOf="@id/sideBTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
+                android:layout_marginBottom="32dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:maxLength="50"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Submit Button -->
+
+            <com.google.android.material.chip.ChipGroup
+
+                android:id="@+id/debateTopics"
+                android:layout_width="match_parent"
+                app:selectionRequired="true"
+                app:singleSelection="true"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/sideBEditText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/debateSubmitButton">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipArts"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_arts"
+                app:chipBackgroundColor="@color/selector_form_chip_background_light"
+                app:checkedIconEnabled="false"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPolitics"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_politics"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSports"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_sports"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPopCulture"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_pop_culture"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipHealth"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_health"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipTechnology"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_technology"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipEducation"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_education"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipHistory"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_history"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipConspiracy"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_conspiracy"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMedia"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_media"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReligion"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_religion"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipScience"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_science"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipEntertainment"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_entertainment"/>
+                <com.google.android.material.chip.Chip
+                android:id="@+id/chipSocial"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_social"/>
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFinance"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_finance"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEnvironment"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_environment"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipGaming"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_gaming"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFilmBooks"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/topic_film_books"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipOther"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/topic_other"/>
+
+
+
+
+
+
+
+
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/debateSubmitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/submit_button"
+                android:text="@string/submit"
+                android:layout_gravity="end|bottom"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+             />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

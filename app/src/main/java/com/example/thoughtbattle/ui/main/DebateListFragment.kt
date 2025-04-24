@@ -14,6 +14,7 @@ import com.example.thoughtbattle.data.model.invalidUser
 import com.example.thoughtbattle.databinding.FragmentGroupChannelListBinding
 import com.example.thoughtbattle.ui.MainViewModel
 import com.example.thoughtbattle.ui.auth.AuthUser
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.oAuthProvider
 import com.sendbird.android.ConnectionState
 import com.sendbird.android.SendbirdChat
@@ -27,6 +28,7 @@ class DebateListFragment : Fragment(R.layout.fragment_group_channel_list) {
     private lateinit var adapter: DebateListAdapter
     private val viewModel: MainViewModel by activityViewModels()
     private var publicChannelQuery: PublicGroupChannelListQuery? = null
+    private var debateTopic: String = ""
 private lateinit var authUser: AuthUser
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,6 +36,7 @@ private lateinit var authUser: AuthUser
 
         setupRecyclerView()
         setupRefreshLayout()
+        initDebateTopics()
 
     }
 
@@ -63,7 +66,25 @@ private lateinit var authUser: AuthUser
 
     }
 
+   private fun initDebateTopics(){
+       binding.debateTopics.setOnCheckedStateChangeListener { group, checkedIds ->
+           val selectedChip = group.findViewById<Chip>(checkedIds[0])
+           val selectedTopic = selectedChip.text.toString()
+           if(selectedTopic!="All") {
+               debateTopic = selectedTopic
+               createNewQuery()
+               loadPublicChannels()
+           }else{
+               debateTopic = ""
+               createNewQuery()
+               loadPublicChannels()
+           }
 
+
+
+
+       }
+   }
 
     private fun setupRecyclerView() {
         adapter = DebateListAdapter().apply {
@@ -129,7 +150,7 @@ private lateinit var authUser: AuthUser
     private fun createNewQuery() {
         publicChannelQuery = GroupChannel.createPublicGroupChannelListQuery(
             PublicGroupChannelListQueryParams().apply {
-
+                customTypesFilter=listOf(debateTopic)
                 membershipFilter = MembershipFilter.ALL
                 includeEmpty = true
             }

@@ -40,29 +40,23 @@ class MainViewModel : ViewModel() {
         }
         debateLiveData
     }
+
     fun addnewUsersToChannel(userId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 addnewUsersToChannel(userId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 Log.e("MainViewModel", "Failed to add new users to channel")
             }
         }
     }
 
 
-     fun setCurrentAuthUser(user: User) {
+    fun setCurrentAuthUser(user: User) {
         currentAuthUser = user
-         loggedInUser.postValue(user)
+        loggedInUser.postValue(user)
 
 
-    }
-    suspend fun addUserToChannels(userId: String) {
-        SendBirdRepository.addnewUserToAllChannels(
-        userId,
-            onSuccess = Log.d("AuthUser", "User added to all channels"),
-            onError = Log.e("AuthUser", "Failed to add user to all channels")
-        )
     }
 
 
@@ -72,7 +66,7 @@ class MainViewModel : ViewModel() {
         var fetchedDebate = Debate()
         viewModelScope.launch(Dispatchers.IO) {
             fetchedDebate = FirebaseRepository.getDebateByChannelUrl(channelUrl)!!
-Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
+            Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
         }
         return fetchedDebate
 
@@ -83,6 +77,7 @@ Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
         title: String,
         sideA: String,
         sideB: String,
+        debateTopic: String,
         onSuccess: (Debate) -> Unit,
         onError: (String) -> Unit
     ) {
@@ -94,7 +89,8 @@ Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
                 val correlationInfo = geminiRepistory.generateCorrelationInfo(title, sideA, sideB)
 
                 // Create channel
-                val channelUrl = SendBirdRepository.createDebateChat(title, currentAuthUser.id)
+                val channelUrl =
+                    SendBirdRepository.createDebateChat(title, currentAuthUser.id, debateTopic)
 
                 // Create debate object
                 val debate = Debate(
@@ -112,7 +108,7 @@ Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
 
                 FirebaseRepository.createDebate(debate)
 
-Log.d("MainViewModel","Adding channel metadeta")
+                Log.d("MainViewModel", "Adding channel metadeta")
                 SendBirdRepository.updateChannelMetaData(channelUrl, debate) { success, message ->
                     if (success) {
                         Log.d("MainViewModel", "Channel metadata updated successfully")
@@ -132,7 +128,9 @@ Log.d("MainViewModel","Adding channel metadeta")
                 onError(e.message ?: "Debate creation failed")
             }
         }
+
     }
+
 
 
     fun setCurrentDebateUrl(channelUrl: String) {
@@ -143,12 +141,7 @@ Log.d("MainViewModel","Adding channel metadeta")
         return debate
 
     }
-    suspend fun addUserToChannel(userId: String) {
-        SendBirdRepository.addnewUserToAllChannels(
-            userId,
-            onSuccess = Log.d("MainViewModel", "User added to channel"),
-            onError = Log.e("MainViewModel", "Failed to add user to channel"))
-    }
+
     fun observerUserAfterLogin():LiveData<User > {
         return loggedInUser
     }
