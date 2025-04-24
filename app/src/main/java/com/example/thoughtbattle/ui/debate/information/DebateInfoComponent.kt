@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import com.example.thoughtbattle.R
 import com.example.thoughtbattle.databinding.ViewCustomHeaderBinding
 import com.example.thoughtbattle.databinding.ViewCustomInformationBinding
+import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.channel.OpenChannel
 import com.sendbird.android.handler.MetaDataHandler
+import com.sendbird.uikit.modules.components.ChannelSettingsInfoComponent
 import com.sendbird.uikit.modules.components.OpenChannelSettingsInfoComponent
 
 
-class DebateInfoComponent(private val fragment: DebateSettingsFragment) : OpenChannelSettingsInfoComponent() {
+class DebateInfoComponent(private val fragment: DebateSettingsFragment) : ChannelSettingsInfoComponent() {
 
     private var _binding: ViewCustomInformationBinding? = null
     private val binding get() = _binding!!
@@ -30,7 +32,7 @@ class DebateInfoComponent(private val fragment: DebateSettingsFragment) : OpenCh
         return requireNotNull(_binding).root
     }
 
-    override fun notifyChannelChanged(channel: OpenChannel) {
+    override fun notifyChannelChanged(channel: GroupChannel) {
         val keys = listOf("side_a", "side_b", "side_a_info", "side_b_info", "correlation_info")
         channel.getMetaData( keys, MetaDataHandler(){
                 metaData, error ->

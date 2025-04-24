@@ -1,20 +1,34 @@
 package com.example.thoughtbattle
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import androidx.navigation.createGraph
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.thoughtbattle.data.model.isInvalid
+import com.example.thoughtbattle.data.repository.SendBirdRepository
 import com.example.thoughtbattle.databinding.ActivityMainBinding
 import com.example.thoughtbattle.ui.MainViewModel
 import com.example.thoughtbattle.ui.auth.AuthUser
+import com.example.thoughtbattle.ui.main.DebateListFragment
+import com.sendbird.android.SendbirdChat
+import com.sendbird.android.channel.GroupChannel
+import com.sendbird.android.channel.query.PublicChannelFilter
+import com.sendbird.android.params.GroupChannelListQueryParams
+import com.sendbird.uikit.fragments.ChannelListFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -85,6 +99,9 @@ class MainActivity : AppCompatActivity() {
             initToolbar()
 
 
+
+
+
         }
 
 
@@ -103,17 +120,38 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
+
                 getSharedPreferences("sendbird", MODE_PRIVATE).edit().putString("user_id", user.id)
                     .apply()
                 getSharedPreferences("sendbird", MODE_PRIVATE).edit().putString("user_nickname", user.username)
                     .apply()
                 getSharedPreferences("sendbird", MODE_PRIVATE).edit().putString("user_profile_pic", user.profileImageUrl)
                     .apply()
+                if (SendbirdChat.currentUser != null) {
+                    SendbirdChat.connect(user.id) { user, e ->
+                        if (e != null) {
+                            Log.d("sendbird", "error connecting user :(")
+                            return@connect
+                        }
+                        Log.d("sendbird", "user connected")
 
-                viewModel.setCurrentAuthUser(user)
+                    }
+                }
+
+                    viewModel.setCurrentAuthUser(user)
+                viewModel.addnewUsersToChannel(user.id)
+
+
+
+                }
+
+
+
+
+
 
 
 
             }
         }
-    }
+

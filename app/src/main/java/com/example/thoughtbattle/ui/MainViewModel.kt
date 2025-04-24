@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
     private var currentAuthUser = invalidUser
+    private var loggedInUser = MutableLiveData<User>()
     private var debateInfo = MutableLiveData<Debate>()
     private var geminiRepistory = GeminiRepository()
 
@@ -39,10 +40,29 @@ class MainViewModel : ViewModel() {
         }
         debateLiveData
     }
+    fun addnewUsersToChannel(userId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                addnewUsersToChannel(userId)
+            }catch(e: Exception){
+                Log.e("MainViewModel", "Failed to add new users to channel")
+            }
+        }
+    }
 
 
-    fun setCurrentAuthUser(user: User) {
+     fun setCurrentAuthUser(user: User) {
         currentAuthUser = user
+         loggedInUser.postValue(user)
+
+
+    }
+    suspend fun addUserToChannels(userId: String) {
+        SendBirdRepository.addnewUserToAllChannels(
+        userId,
+            onSuccess = Log.d("AuthUser", "User added to all channels"),
+            onError = Log.e("AuthUser", "Failed to add user to all channels")
+        )
     }
 
 
@@ -74,7 +94,7 @@ Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
                 val correlationInfo = geminiRepistory.generateCorrelationInfo(title, sideA, sideB)
 
                 // Create channel
-                val channelUrl = SendBirdRepository.createOpenChannel(title, currentAuthUser.id)
+                val channelUrl = SendBirdRepository.createDebateChat(title, currentAuthUser.id)
 
                 // Create debate object
                 val debate = Debate(
@@ -92,14 +112,21 @@ Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
 
                 FirebaseRepository.createDebate(debate)
 
-
+Log.d("MainViewModel","Adding channel metadeta")
                 SendBirdRepository.updateChannelMetaData(channelUrl, debate) { success, message ->
                     if (success) {
+                        Log.d("MainViewModel", "Channel metadata updated successfully")
                         onSuccess(debate)
                     } else {
+                        Log.e("MainViewModel", "Channel metadata update failed: $message")
                         onError(message ?: "Unknown error")
                     }
                 }
+
+                //add discussion moderator bot to channel :)
+                Log.d("MainViewModel", "Adding bot to channel: $channelUrl")
+                SendBirdRepository.addBotToChannel("discussion_moderator", listOf(channelUrl))
+
 
             } catch (e: Exception) {
                 onError(e.message ?: "Debate creation failed")
@@ -115,6 +142,15 @@ Log.d("MainViewModel", "Fetched debate: $fetchedDebate")
     fun observeDebate(): LiveData<Debate?> {
         return debate
 
+    }
+    suspend fun addUserToChannel(userId: String) {
+        SendBirdRepository.addnewUserToAllChannels(
+            userId,
+            onSuccess = Log.d("MainViewModel", "User added to channel"),
+            onError = Log.e("MainViewModel", "Failed to add user to channel"))
+    }
+    fun observerUserAfterLogin():LiveData<User > {
+        return loggedInUser
     }
 
 }

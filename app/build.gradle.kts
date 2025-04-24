@@ -14,7 +14,8 @@ val sendbirdAppId = properties.getProperty("sendbirdAppId")
 val wikimediaClientId = properties.getProperty("wikimediaClientId")
 val wikimediaClientSecret = properties.getProperty("wikimediaClientSecret")
 val wikimediaAccessToken = properties.getProperty("wikimediaAccessToken")
-
+val sendbirdAPIKey = properties.getProperty("sendbirdAPIKey")
+val sendbirdURL = properties.getProperty("sendbirdURL")
 android {
     namespace = "com.example.thoughtbattle"
     compileSdk = 35
@@ -34,6 +35,9 @@ android {
         buildConfigField("String", "WIKIMEDIA_CLIENT_ID", "\"$wikimediaClientId\"")
         buildConfigField("String", "WIKIMEDIA_CLIENT_SECRET", "\"$wikimediaClientSecret\"")
         buildConfigField("String", "WIKIMEDIA_ACCESS_TOKEN", "\"$wikimediaAccessToken\"")
+        buildConfigField("String", "SENDBIRD_API_KEY", "\"$sendbirdAPIKey\"")
+        buildConfigField("String", "SENDBIRD_URL", "\"$sendbirdURL\"")
+
     }
 
     buildTypes {
@@ -70,16 +74,19 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.firebase.appcheck.ktx)
     implementation(libs.firebase.appcheck.debug)
+    implementation(libs.androidx.cardview)
 
 
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // SendBird
     implementation("com.sendbird.sdk:sendbird-chat:4.24.0")
     implementation ("com.sendbird.sdk:uikit:3.23.0")
+
 
 
     // AndroidX

@@ -1,5 +1,6 @@
 package com.example.thoughtbattle.ui.auth
 
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
@@ -11,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.thoughtbattle.R
 import com.example.thoughtbattle.data.model.User
 import com.example.thoughtbattle.data.model.invalidUser
+import com.example.thoughtbattle.data.repository.SendBirdRepository
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.google.firebase.auth.FirebaseAuth
@@ -57,6 +59,8 @@ class AuthUser(private val registry: ActivityResultRegistry) :
                 firebaseUser.photoUrl.toString()
             )
 
+
+
             liveUser.postValue(user)
         }
 
@@ -72,7 +76,16 @@ class AuthUser(private val registry: ActivityResultRegistry) :
         signInLauncher =
             registry.register("key", owner, FirebaseAuthUIActivityResultContract()) { result ->
                 pendingLogin = false
+                if (result.resultCode == Activity.RESULT_OK) {
 
+                    val user = Firebase.auth.currentUser
+                   // SendBirdRepository.connect(user!!.uid)
+
+                    Log.d(TAG, "Sign-in successful: ${user?.email}")
+                } else {
+
+                    Log.d(TAG, "Sign-in failed: ${result.idpResponse?.error?.errorCode}")
+                }
             }
     }
 
@@ -84,19 +97,19 @@ class AuthUser(private val registry: ActivityResultRegistry) :
 
     fun login() {
         if (user() == null && !pendingLogin) {
+            pendingLogin = true
             val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build(),
-                AuthUI.IdpConfig.GoogleBuilder().build()
+                AuthUI.IdpConfig.EmailBuilder().build()
             )
             val signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers).setLogo(R.drawable.thoughtbatle)
                 .setIsSmartLockEnabled(false)
                 .setTheme(R.style.Theme_FirebaseAuth_NoActionBar)
+
                 .build()
             signInLauncher.launch(signInIntent)
         }
-
     }
 
     fun logout() {

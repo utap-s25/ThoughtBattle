@@ -15,16 +15,19 @@ import com.example.thoughtbattle.MainActivity
 import com.example.thoughtbattle.R
 import com.example.thoughtbattle.databinding.ViewCustomHeaderBinding
 import com.example.thoughtbattle.ui.debate.DebateChatFragment
+import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.channel.OpenChannel
 import com.sendbird.android.handler.MetaDataHandler
+import com.sendbird.uikit.activities.ChannelSettingsActivity
 import com.sendbird.uikit.activities.OpenChannelSettingsActivity
 import com.sendbird.uikit.fragments.OpenChannelSettingsFragment
+import com.sendbird.uikit.modules.components.ChannelHeaderComponent
 import com.sendbird.uikit.modules.components.OpenChannelHeaderComponent
 
 
 
 
-class DebateChatHeader : OpenChannelHeaderComponent() {
+class DebateChatHeader : ChannelHeaderComponent() {
     private var _binding: ViewCustomHeaderBinding? = null
     private val binding get() = _binding!!
     private var channelUrl: String? = null
@@ -41,10 +44,10 @@ class DebateChatHeader : OpenChannelHeaderComponent() {
         return binding.root
     }
 
-    override fun notifyChannelChanged(channel: OpenChannel) {
+    override fun notifyChannelChanged(channel: GroupChannel) {
         binding.title.text = channel.name
 
-        // Get sideA and sideB info from channel metadata
+
         val keys = listOf("side_a", "side_b")
         channel.getMetaData(keys, MetaDataHandler { metaData, error ->
             if (error != null) {
@@ -55,9 +58,9 @@ class DebateChatHeader : OpenChannelHeaderComponent() {
             binding.sideBTitle.text = metaData?.get("side_b")
 
             binding.infoButton.setOnClickListener {
-                // Ensure context is not null
+
                 context?.let {
-                    val intent = OpenChannelSettingsActivity.newIntent(it, channel.url)
+                    val intent = ChannelSettingsActivity.newIntent(it, channel.url)
                     startActivity(it, intent, null)
                 }
             }

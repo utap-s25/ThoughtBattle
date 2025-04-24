@@ -10,13 +10,14 @@ import com.example.thoughtbattle.databinding.ViewCustomInformationBinding
 import com.example.thoughtbattle.ui.MainViewModel
 import com.sendbird.android.channel.OpenChannel
 import com.sendbird.android.handler.MetaDataHandler
+import com.sendbird.uikit.fragments.ChannelSettingsFragment
 import com.sendbird.uikit.fragments.OpenChannelSettingsFragment
 import com.sendbird.uikit.modules.components.OpenChannelSettingsInfoComponent
 import com.sendbird.uikit.vm.OpenChannelSettingsViewModel
 
 
 
-class DebateSettingsFragment : OpenChannelSettingsFragment() {
+class DebateSettingsFragment : ChannelSettingsFragment() {
 
     private val viewModel: MainViewModel by viewModels()
     private lateinit var debateInfoComponent: DebateInfoComponent

@@ -3,18 +3,23 @@ package com.example.thoughtbattle.data.repository
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.thoughtbattle.BuildConfig
 import com.example.thoughtbattle.data.model.Debate
 import com.example.thoughtbattle.ui.main.DebateListFragment
-import com.sendbird.android.channel.OpenChannel
+import com.sendbird.android.SendbirdChat
+import com.sendbird.android.channel.GroupChannel
+import com.sendbird.android.channel.query.MembershipFilter
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.handler.InitResultHandler
-import com.sendbird.android.params.OpenChannelCreateParams
+import com.sendbird.android.params.ApplicationUserListQueryParams
+import com.sendbird.android.params.GroupChannelCreateParams
+import com.sendbird.android.params.PublicGroupChannelListQueryParams
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter
-import com.sendbird.uikit.fragments.OpenChannelListFragment
+import com.sendbird.uikit.fragments.ChannelListFragment
 import com.sendbird.uikit.interfaces.UserInfo
-import com.sendbird.uikit.interfaces.providers.OpenChannelListFragmentProvider
+import com.sendbird.uikit.interfaces.providers.ChannelListFragmentProvider
 import com.sendbird.uikit.providers.FragmentProviders
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
@@ -24,6 +29,8 @@ object SendBirdRepository {
     private  val APP_ID = BuildConfig.SENDBIRD_APP_ID
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var context: Context
+    private  lateinit var userList: MutableLiveData<MutableList<String>>
+
 
     fun initialize(context: Context) {
         this.context = context
@@ -75,11 +82,7 @@ object SendBirdRepository {
                 }
             }
         }, context)
-        FragmentProviders.openChannelList = OpenChannelListFragmentProvider { args ->
-            OpenChannelListFragment.Builder().withArguments(args).setCustomFragment(DebateListFragment())
-                .setUseHeader(false).setUseHeaderRightButton(false)
-                .build()
-        }
+
 
     }
 
@@ -97,27 +100,56 @@ object SendBirdRepository {
         SendbirdUIKit.disconnect(null)
     }
 
+
     fun createOpenChannel(name: String, callback: (String) -> Unit, userId: String) {
-        val params = OpenChannelCreateParams().apply {
+        val params = GroupChannelCreateParams().apply {
             this.name = name
             this.operatorUserIds = listOf(userId)
+            this.isPublic= true
+            this.coverUrl= "https://media.istockphoto.com/id/1369076864/vector/three-people-talking-discussion-seminar-conversation.jpg?s=612x612&w=0&k=20&c=DQEKI5fzOOH8BfJ_vvr2gGsiXulp7UmKlmPvs7V_qPo="
         }
 
-        OpenChannel.createChannel(params) { channel, e ->
+
+
+
+
+            GroupChannel.createChannel(params) { channel, e ->
             if (e != null) {
                 Log.e("SendBirdRepository", "Channel creation failed", e)
                 return@createChannel
             }
             callback(channel?.url ?: "")
         }
-    }suspend fun createOpenChannel(name: String, userId: String): String {
+    }suspend fun createDebateChat(name: String, userId: String): String {
         return suspendCancellableCoroutine { continuation ->
-            val params = OpenChannelCreateParams().apply {
-                this.name = name
-                this.operatorUserIds = listOf(userId)
+            val query = SendbirdChat.createApplicationUserListQuery(ApplicationUserListQueryParams())
+            val userList = query.next{ users,e ->
+                if(e !=null){
+                    Log.e("SendBirdRepository", "User list retrieval failed", e)
+                    return@next
+                }
+                //get list of userids from users list
+var temp = mutableListOf<String>()
+              users?.forEach(
+                   {user->
+                       temp.add(user.userId)
+                   }
+
+               )
+                userList.postValue(temp)
             }
 
-            OpenChannel.createChannel(params) { channel, e ->
+            val params = GroupChannelCreateParams().apply {
+                this.name = name
+                this.operatorUserIds = listOf(userId)
+                this.isPublic = true
+                this.userIds=(userList as List<String>)
+                this.isDiscoverable=true
+
+
+            }
+
+            GroupChannel.createChannel(params) { channel, e ->
                 if (e != null) {
                     Log.e("SendBirdRepository", "Channel creation failed", e)
                     continuation.resumeWithException(e)
@@ -130,7 +162,7 @@ object SendBirdRepository {
         }
     }
     fun updateChannelMetaData(channelUrl: String, debate: Debate, callback: (Boolean, String?) -> Unit) {
-        OpenChannel.getChannel(channelUrl) { channel, e ->
+        GroupChannel.getChannel(channelUrl) { channel, e ->
             if (e != null) {
                 callback(false, "Channel retrieval failed: ${e.message}")
                 return@getChannel
@@ -157,4 +189,45 @@ object SendBirdRepository {
         }
     }
 
+
+suspend fun addBotToChannel(userId: String, channelUrls: List<String>) {
+    val requestBody = SendbirdApi.SendbirdRequestBody(channelUrls)
+    val apiService = SendbirdApi.create()
+    try {
+        val response = apiService.addBotToChannel(userId, requestBody)
+        Log.d("SendBirdRepository", "Bot added to channels: $response")
+    } catch (e: Exception) {
+        Log.e("SendBirdRepository", "Error adding bot to channels", e)
+
+    }
+
+
+}
+    suspend fun  addnewUserToAllChannels(userId: String, onSuccess: Int, onError: Int)
+    {
+        val query = GroupChannel.createPublicGroupChannelListQuery(
+            PublicGroupChannelListQueryParams().apply{
+                membershipFilter= MembershipFilter.ALL
+                includeEmpty=true
+            }
+        ).next(
+            { channels, e ->
+                if (e != null) {
+                    Log.e("SendBirdRepository", "Error fetching channels", e)
+                    return@next
+                }
+                channels?.forEach { channel ->
+                    channel.invite(listOf(userId)) { e ->
+                        if (e != null) {
+                            Log.e("SendBirdRepository", "Error adding user to channel", e)
+
+
+            }
+                       // Log.d("SendBirdRepository", "User added to channel: $users")
+                    }
+
+                }
+            }
+        )
+    }
 }
