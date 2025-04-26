@@ -1,4 +1,4 @@
-package com.example.thoughtbattle.data.repository
+package com.example.thoughtbattle.data.services
 
 import com.example.thoughtbattle.BuildConfig
 import com.google.gson.annotations.SerializedName
@@ -26,9 +26,9 @@ data class SendbirdRequestBody(
 
 companion object{
     var url = HttpUrl.Builder().scheme("https").host(BuildConfig.SENDBIRD_URL).build()
-    fun create():SendbirdApi = create(url)
-    private fun create(httpUrl: HttpUrl):SendbirdApi{
-        val client = OkHttpClient.Builder().addInterceptor( Interceptor(){
+    fun create(): SendbirdApi = create(url)
+    private fun create(httpUrl: HttpUrl): SendbirdApi {
+        val client = OkHttpClient.Builder().addInterceptor( Interceptor {
             chain ->
             val newRequest = chain.request().newBuilder().addHeader("Api-Token",BuildConfig.SENDBIRD_API_KEY).build()
             chain.proceed(newRequest)

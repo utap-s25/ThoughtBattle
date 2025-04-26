@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.firebase.appcheck.ktx)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.androidx.cardview)
+    implementation(libs.play.services.cast.framework)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.analytics)
 
 
     // Testing

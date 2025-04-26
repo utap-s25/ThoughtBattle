@@ -23,6 +23,10 @@ navigationFragment = "2.8.9"
 firebaseAppcheckKtx = "18.0.0"
 firebaseAppcheckDebug = "18.0.0"
 cardview = "1.0.0"
+glide = "4.15.1"
+playServicesCastFramework = "22.0.0"
+firebaseStorageKtx = "21.0.1"
+firebaseAnalytics = "22.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,6 +51,10 @@ androidx-navigation-fragment = { group = "androidx.navigation", name = "navigati
 firebase-appcheck-ktx = { group = "com.google.firebase", name = "firebase-appcheck-ktx", version.ref = "firebaseAppcheckKtx" }
 firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug", version.ref = "firebaseAppcheckDebug" }
 androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+play-services-cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "playServicesCastFramework" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

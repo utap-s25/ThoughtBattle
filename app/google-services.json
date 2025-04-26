@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "799936274653",
+    "firebase_url": "https://thoughtbattle-a098b-default-rtdb.firebaseio.com",
     "project_id": "thoughtbattle-a098b",
     "storage_bucket": "thoughtbattle-a098b.firebasestorage.app"
   },

@@ -2,7 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/default_nav_host"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/homeFragment"
+    tools:layout="@layout/activity_main"
+    tools:context=".MainActivity"
+    >
 
     <fragment
         android:id="@+id/homeFragment"
@@ -20,6 +23,13 @@
         <argument
             android:name="KEY_CHANNEL_URL"
             app:argType="string" />
+        <action
+            android:id="@+id/action_home_to_profile"
+            app:destination="@id/profileFragment" >
+            <argument android:name="PROFILE_USER_ID"
+                app:argType="string" />
+        </action>
+
     </fragment>
 
     <fragment
@@ -59,5 +69,35 @@
         <argument
             android:name="KEY_CHANNEL_URL"
             app:argType="string" />
+        <action android:id="@+id/action_debateChatFragment_to_userProfileFragment"
+            app:destination="@id/profileFragment">
+            <argument android:name="PROFILE_USER_ID" app:argType="string" />
+        </action>
+
     </fragment>
+    <fragment android:id="@+id/profileFragment"
+        android:name="com.example.thoughtbattle.ui.auth.UserProfileFragment"
+        android:label="Profile">
+
+
+        <action android:id="@+id/action_edit_profile"
+            app:destination="@id/editProfileFragment" />
+        <action android:id="@+id/action_home_to_debate_chat"
+            app:destination="@id/debateFragment" />
+        <action android:id="@+id/profile_to_debate_chat"
+            app:destination="@id/debateFragment">
+            <argument android:name="KEY_CHANNEL_URL"
+                app:argType="string" />
+        </action>
+
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.thoughtbattle.ui.auth.EditProfileFragment"
+        android:label="Edit Profile">
+        <action android:id="@+id/action_edit_profile_to_profile" app:destination="@id/profileFragment">
+    <argument android:name="PROFILE_USER_ID" app:argType="string"/>
+        </action>
+    </fragment>
+
 </navigation>

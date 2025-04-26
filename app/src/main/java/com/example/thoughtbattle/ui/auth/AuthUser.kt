@@ -2,6 +2,7 @@ package com.example.thoughtbattle.ui.auth
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
@@ -12,13 +13,20 @@ import androidx.lifecycle.MutableLiveData
 import com.example.thoughtbattle.R
 import com.example.thoughtbattle.data.model.User
 import com.example.thoughtbattle.data.model.invalidUser
+import com.example.thoughtbattle.data.repository.FirebaseRepository
 import com.example.thoughtbattle.data.repository.SendBirdRepository
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.sendbird.android.SendbirdChat
+import com.sendbird.android.params.UserUpdateParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AuthUser(private val registry: ActivityResultRegistry) :
     DefaultLifecycleObserver, FirebaseAuth.AuthStateListener {
@@ -26,8 +34,11 @@ class AuthUser(private val registry: ActivityResultRegistry) :
         private const val TAG = "AuthUser"
     }
 
+
     private var pendingLogin = false
-    private lateinit var auth: FirebaseAuth
+    private var userPosted = false
+
+
 
     //basically just stealign the Auth from our flipped classrooms lololol
     private lateinit var signInLauncher: ActivityResultLauncher<Intent>
@@ -38,37 +49,52 @@ class AuthUser(private val registry: ActivityResultRegistry) :
     }
 
     init {
-        auth = Firebase.auth
-       auth.addAuthStateListener(this)
+
+        Firebase.auth.addAuthStateListener(this)
     }
 
     fun observeUser(): LiveData<User> {
-        return liveUser
+        if (!userPosted) {
+            userPosted = true
+            return liveUser
+        }
+        return MutableLiveData<User>()
     }
 
-    private fun postUserUpdate(firebaseUser: FirebaseUser?) {
-        if (firebaseUser == null) {
-            Log.d(TAG, "postUser login")
+
+    private  fun postUserUpdate(firebaseUser: FirebaseUser?) {
+        if (firebaseUser == null || firebaseUser.uid == null || firebaseUser.uid =="null") {
             liveUser.postValue(invalidUser)
             login()
         } else {
-            val user = User(
-                firebaseUser.uid,
-                firebaseUser.displayName ?: "",
-                firebaseUser.email ?: "",
-                firebaseUser.photoUrl.toString()
-            )
 
 
 
-            liveUser.postValue(user)
+                        val user = User(
+                            id = firebaseUser.uid,
+                            username = firebaseUser.displayName ?: "New User",
+                            profileImageUrl = firebaseUser.photoUrl?.toString() ?: ""
+                        )
+userPosted=true
+
+
+
+
+
+liveUser.postValue(user)
+
+
+
         }
-
-
     }
 
+
+
     override fun onAuthStateChanged(auth: FirebaseAuth) {
-        postUserUpdate(auth.currentUser)
+
+            postUserUpdate(auth.currentUser)
+
+
 
     }
 
@@ -79,7 +105,7 @@ class AuthUser(private val registry: ActivityResultRegistry) :
                 if (result.resultCode == Activity.RESULT_OK) {
 
                     val user = Firebase.auth.currentUser
-                   // SendBirdRepository.connect(user!!.uid)
+                    // SendBirdRepository.connect(user!!.uid)
 
                     Log.d(TAG, "Sign-in successful: ${user?.email}")
                 } else {
@@ -90,16 +116,16 @@ class AuthUser(private val registry: ActivityResultRegistry) :
     }
 
     private fun user(): FirebaseUser? {
-        return auth.currentUser
+        return Firebase.auth.currentUser
     }
-    //@ bryan looking at fc7, maybe you can functionality for profile here?? idk
 
 
     fun login() {
         if (user() == null && !pendingLogin) {
             pendingLogin = true
             val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build()
+                AuthUI.IdpConfig.EmailBuilder().build(),
+                AuthUI.IdpConfig.GoogleBuilder().build()
             )
             val signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
@@ -112,9 +138,61 @@ class AuthUser(private val registry: ActivityResultRegistry) :
         }
     }
 
+
+    suspend fun updateProfile(
+        displayName: String,
+        photoUri: Uri?,
+        onComplete: (Exception?) -> Unit
+    ) {
+
+        try {
+
+            FirebaseRepository.updateUserProfile(displayName, photoUri)
+
+
+            val updates = hashMapOf<String, Any>(
+                "displayName" to displayName
+            )
+            photoUri?.let { updates["photoUrl"] = it.toString() }
+
+            FirebaseRepository.updateFirestoreUser(updates)
+
+
+            val user = liveUser.value?.let { FirebaseRepository.getFirestoreUser(it.id) }
+
+            SendbirdChat.updateCurrentUserInfo(UserUpdateParams().apply {
+                nickname = user?.username
+                profileImageUrl = user?.profileImageUrl
+            }) {
+                if (it != null) {
+                    Log.e(TAG, "Error updating Sendbird user info", it)
+                }
+            }
+
+            liveUser.postValue(user)
+
+            onComplete(null)
+        } catch (e: Exception) {
+            onComplete(e)
+        }
+    }
+
+
+    suspend fun loadUserProfile(uid: String): User {
+        var userProfile = User()
+        try {
+            userProfile = FirebaseRepository.getFirestoreUser(uid)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Error loading user profile", e)
+        }
+        return userProfile
+
+    }
+
     fun logout() {
         if (user() == null) return
-        auth.signOut()
+        Firebase.auth.signOut()
         login()
     }
 }

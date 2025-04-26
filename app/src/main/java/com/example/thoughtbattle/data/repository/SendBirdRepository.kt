@@ -7,21 +7,14 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.thoughtbattle.BuildConfig
 import com.example.thoughtbattle.data.model.Debate
-import com.example.thoughtbattle.ui.main.DebateListFragment
-import com.sendbird.android.SendbirdChat
+import com.example.thoughtbattle.data.services.SendbirdApi
 import com.sendbird.android.channel.GroupChannel
-import com.sendbird.android.channel.query.MembershipFilter
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.handler.InitResultHandler
-import com.sendbird.android.params.ApplicationUserListQueryParams
 import com.sendbird.android.params.GroupChannelCreateParams
-import com.sendbird.android.params.PublicGroupChannelListQueryParams
 import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.adapter.SendbirdUIKitAdapter
-import com.sendbird.uikit.fragments.ChannelListFragment
 import com.sendbird.uikit.interfaces.UserInfo
-import com.sendbird.uikit.interfaces.providers.ChannelListFragmentProvider
-import com.sendbird.uikit.providers.FragmentProviders
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resumeWithException
 
@@ -124,7 +117,8 @@ object SendBirdRepository {
                     continuation.resumeWithException(e)
                     return@createChannel
                 }
-                continuation.resume(channel?.url ?: "") {
+                // Handle cancellation
+                continuation.resume(channel?.url ?: "") { cause, _, _ -> // Handle cancellation
                     // Handle cancellation
                 }
             }

@@ -1,20 +1,32 @@
 package com.example.thoughtbattle.ui.main
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.thoughtbattle.MainActivity
 import com.example.thoughtbattle.R
+import com.example.thoughtbattle.data.model.User
 import com.example.thoughtbattle.data.model.invalidUser
 import com.example.thoughtbattle.databinding.FragmentGroupChannelListBinding
 import com.example.thoughtbattle.ui.MainViewModel
 import com.example.thoughtbattle.ui.auth.AuthUser
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.oAuthProvider
 import com.sendbird.android.ConnectionState
 import com.sendbird.android.SendbirdChat
@@ -22,6 +34,8 @@ import com.sendbird.android.channel.GroupChannel
 import com.sendbird.android.channel.query.MembershipFilter
 import com.sendbird.android.channel.query.PublicGroupChannelListQuery
 import com.sendbird.android.params.PublicGroupChannelListQueryParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DebateListFragment : Fragment(R.layout.fragment_group_channel_list) {
     private lateinit var binding: FragmentGroupChannelListBinding
@@ -29,62 +43,71 @@ class DebateListFragment : Fragment(R.layout.fragment_group_channel_list) {
     private val viewModel: MainViewModel by activityViewModels()
     private var publicChannelQuery: PublicGroupChannelListQuery? = null
     private var debateTopic: String = ""
-private lateinit var authUser: AuthUser
+    private lateinit var menuHost: MenuHost
+
+    private lateinit var authUser: User
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentGroupChannelListBinding.bind(view)
+        menuHost = requireActivity()
+        binding.indeterminateBar.visibility = View.VISIBLE
+
+
 
         setupRecyclerView()
         setupRefreshLayout()
         initDebateTopics()
+        viewModel.observeAuthUser().observe(viewLifecycleOwner) {
+            user ->
+            authUser = user
+            SendbirdChat.connect(FirebaseAuth.getInstance().currentUser!!.uid) { _, e ->
+            }
+            loadInitialChannels()
+            binding.indeterminateBar.visibility = View.GONE
+        }
+        refreshChannels()
+
+
+
 
     }
+
+
+
 
     override fun onResume() {
         super.onResume()
-        viewModel.observerUserAfterLogin().observe(viewLifecycleOwner) {
-            if (it != invalidUser) {
-                SendbirdChat.connect(it.id) { user, e ->
-                    if (e != null) {
-                        Toast.makeText(
-                            context,
-                            "Connection failed: ${e.message}",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    } else {
-                        loadInitialChannels()
+        binding.indeterminateBar.visibility = View.VISIBLE
 
-                    }
-                    refreshChannels()
-                }
+        viewModel.observeAuthUser().observe(viewLifecycleOwner) {
 
+            SendbirdChat.connect(FirebaseAuth.getInstance().currentUser!!.uid){ _, e ->
             }
+            loadPublicChannels()
+
         }
-        binding.  indeterminateBar.visibility = View.GONE
+
 
 
     }
 
-   private fun initDebateTopics(){
-       binding.debateTopics.setOnCheckedStateChangeListener { group, checkedIds ->
-           val selectedChip = group.findViewById<Chip>(checkedIds[0])
-           val selectedTopic = selectedChip.text.toString()
-           if(selectedTopic!="All") {
-               debateTopic = selectedTopic
-               createNewQuery()
-               loadPublicChannels()
-           }else{
-               debateTopic = ""
-               createNewQuery()
-               loadPublicChannels()
-           }
+    private fun initDebateTopics() {
+        binding.debateTopics.setOnCheckedStateChangeListener { group, checkedIds ->
+            val selectedChip = group.findViewById<Chip>(checkedIds[0])
+            val selectedTopic = selectedChip.text.toString()
+            if (selectedTopic != "All") {
+                debateTopic = selectedTopic
+                createNewQuery()
+                loadPublicChannels()
+            } else {
+                debateTopic = ""
+                createNewQuery()
+                loadPublicChannels()
+            }
 
 
-
-
-       }
-   }
+        }
+    }
 
     private fun setupRecyclerView() {
         adapter = DebateListAdapter().apply {
@@ -113,7 +136,6 @@ private lateinit var authUser: AuthUser
     }
 
 
-
     private fun attemptReconnect() {
         val prefs = requireContext().getSharedPreferences("sendbird", 0)
         val userId = prefs.getString("user_id", null) ?: run {
@@ -124,7 +146,8 @@ private lateinit var authUser: AuthUser
         SendbirdChat.connect(userId) { user, e ->
             activity?.runOnUiThread {
                 if (e != null) {
-                    Toast.makeText(context, "Connection failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Connection failed: ${e.message}", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
                     loadInitialChannels()
                 }
@@ -148,19 +171,28 @@ private lateinit var authUser: AuthUser
     }
 
     private fun createNewQuery() {
-        publicChannelQuery = GroupChannel.createPublicGroupChannelListQuery(
-            PublicGroupChannelListQueryParams().apply {
-                customTypesFilter=listOf(debateTopic)
-                membershipFilter = MembershipFilter.ALL
-                includeEmpty = true
-            }
-        )
+        if (debateTopic== "All"){
+            publicChannelQuery = GroupChannel.createPublicGroupChannelListQuery(
+                PublicGroupChannelListQueryParams().apply {
+                    membershipFilter = MembershipFilter.ALL
+                    includeEmpty = true
+                    customTypesFilter= listOf("History", "Politics", "Science", "Technology", "Sports", "Finance", "Environment", "Pop Culture", "Gaming", "Arts", "Media", "Health", "Religion", "Conspiracy", "Entertainment", "Social", "Education", "Film and Books")
+                })
+        }else {
+            publicChannelQuery = GroupChannel.createPublicGroupChannelListQuery(
+                PublicGroupChannelListQueryParams().apply {
+                    customTypesFilter = listOf(debateTopic)
+                    membershipFilter = MembershipFilter.ALL
+                    includeEmpty = true
+                }
+            )
+        }
     }
 
     private fun loadPublicChannels() {
         if (SendbirdChat.connectionState != ConnectionState.OPEN) {
             binding.swipeRefreshLayout.isRefreshing = false
-            Toast.makeText(context, "Not connected to chat", Toast.LENGTH_SHORT).show()
+
             return
         }
 
@@ -199,13 +231,15 @@ private lateinit var authUser: AuthUser
     }
 
 
-
     private fun handleChannelClick(channel: GroupChannel) {
         channel.join { e ->
             activity?.runOnUiThread {
                 if (e != null) {
                     Toast.makeText(context, "Join failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 } else {
+                    viewModel.logChannelJoinEvent(channel.url, channel.name, viewModel.currentAuthUser.value!!.id, channel.customType!!)
+                    viewModel.updateUserDebateHistory(channel)
+
                     navigateToChannel(channel.url)
                 }
             }
@@ -213,7 +247,8 @@ private lateinit var authUser: AuthUser
     }
 
     private fun navigateToChannel(channelUrl: String) {
-        findNavController().navigate(     
+
+        findNavController().navigate(
             R.id.action_home_to_debate_chat,
             Bundle().apply { putString("KEY_CHANNEL_URL", channelUrl) }
         )

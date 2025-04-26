@@ -3,6 +3,7 @@ package com.example.thoughtbattle
 import android.app.Application
 import android.provider.UserDictionary.Words.APP_ID
 import android.util.Log
+import com.example.thoughtbattle.ThoughtBattle.companion.firebaseAnalytics
 import com.example.thoughtbattle.data.repository.SendBirdRepository
 import com.example.thoughtbattle.ui.debate.DebateChatFragment
 import com.example.thoughtbattle.ui.debate.information.DebateChatHeader
@@ -10,16 +11,21 @@ import com.example.thoughtbattle.ui.debate.information.DebateInfoComponent
 import com.example.thoughtbattle.ui.debate.information.DebateSettingsFragment
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.analytics
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.sendbird.android.SendbirdChat
 import com.sendbird.android.exception.SendbirdException
 import com.sendbird.android.handler.InitResultHandler
 import com.sendbird.android.params.InitParams
+import com.sendbird.uikit.SendbirdUIKit
 import com.sendbird.uikit.fragments.ChannelFragment
 import com.sendbird.uikit.interfaces.providers.ChannelFragmentProvider
 import com.sendbird.uikit.interfaces.providers.ChannelModuleProvider
 import com.sendbird.uikit.interfaces.providers.ChannelSettingsModuleProvider
+import com.sendbird.uikit.model.UserMentionConfig
+import com.sendbird.uikit.model.configurations.UIKitConfig
 import com.sendbird.uikit.modules.ChannelModule
 import com.sendbird.uikit.modules.ChannelSettingsModule
 import com.sendbird.uikit.providers.FragmentProviders
@@ -28,6 +34,9 @@ import com.sendbird.uikit.providers.ModuleProviders
 
 //apparently having this class will be really important since i think we will need a global context?? yeah lol
 class ThoughtBattle : Application() {
+    object companion{
+        lateinit var firebaseAnalytics: FirebaseAnalytics
+    }
 
 
     override fun onCreate() {
@@ -86,7 +95,14 @@ class ThoughtBattle : Application() {
                 .setUseHeader(false).setUseHeaderRightButton(true)
                 .build()
         }
-
+        UIKitConfig.groupChannelConfig.enableMention = true
+        SendbirdUIKit.setMentionConfig(
+            UserMentionConfig.Builder()
+                .setMaxMentionCount(10)
+                .setMaxSuggestionCount(15)
+                .build()
+        )
+      firebaseAnalytics = Firebase.analytics
 
 
 

@@ -22,16 +22,5 @@ class DebateSettingsFragment : ChannelSettingsFragment() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var debateInfoComponent: DebateInfoComponent
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
 
 }

@@ -58,14 +58,22 @@ class CreateDebateFragment : Fragment(R.layout.fragment_create_debate) {
                 Toast.makeText(activity, getString(R.string.side_b_cannot_be_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+            if(debateTopic.isEmpty()){
+                Toast.makeText(activity, getString(R.string.debate_topic_cannot_be_empty), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            viewModel.loadingState.observe(viewLifecycleOwner, { isLoading ->
+
+            })
             binding.indeterminateBar.visibility = View.VISIBLE
             viewLifecycleOwner.lifecycleScope.launch {
+                binding.debateSubmitButton.isEnabled = false
                 viewModel.createnewDebate(
                     title, sideA, sideB,debateTopic,
                     onSuccess = { debate ->
 
                        //go back to debate list fragment for now since we're having trouble trying to load the created chat lol
-                        findNavController().navigate(R.id.action_create_debate_to_chat, bundleOf("channelUrl" to debate.channelUrl))
+                        findNavController().navigate(R.id.action_create_debate_to_home)
                     },
                     onError = { errorMessage ->
                         Toast.makeText(activity, errorMessage, Toast.LENGTH_SHORT).show()

@@ -34,7 +34,7 @@ class DebateInfoComponent(private val fragment: DebateSettingsFragment) : Channe
 
     override fun notifyChannelChanged(channel: GroupChannel) {
         val keys = listOf("side_a", "side_b", "side_a_info", "side_b_info", "correlation_info")
-        channel.getMetaData( keys, MetaDataHandler(){
+        channel.getMetaData( keys, MetaDataHandler {
                 metaData, error ->
             if (error != null) {
                 Log.e("DebateChatHeader", "Error fetching metadata: ${error.message}")

@@ -14,7 +14,8 @@ data class Debate(
     val createdAt: Long = System.currentTimeMillis(),
     val participantCount: Int? = 0,
     var channelUrl: String = "",
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val topic: String = ""
 ){
     init {
         FirebaseRepository.createDebate(this)

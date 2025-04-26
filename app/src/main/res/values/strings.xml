@@ -68,5 +68,18 @@
     <string name="topic_film_books">Film and Books</string>
     <string name="all">All</string>
     <string name="submit_button">Submit button</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="message">Message</string>
+    <string name="following">following</string>
+    <string name="debates">Debates</string>
+    <string name="display_name">Display Name</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name="display_name_required">Dislay Name Required</string>
+    <string name="image_upload_failed">Image Upload Failed</string>
+    <string name="ai_recommendations">Recommendations</string>
+    <string name="debate_history">Debate History\n</string>
+    <string name="no_debates_joined">No Debates Joined</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="debate_topic_cannot_be_empty">Please choose a topic</string>
 
 </resources>

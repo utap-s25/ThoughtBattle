@@ -1,74 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
-    <TextView
-        android:id="@+id/title"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:padding="16dp">
 
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:text="Side A Title"
-            android:id="@+id/sideATitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"/>/>
-        <TextView
-            android:text="Side B Title"
-            android:id="@+id/sideBTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"/>/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:text="Side A Content"
-            android:id="@+id/sideAContent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scrollbars = "vertical"/>
-        <TextView
-            android:text="Side B Content"
-            android:id="@+id/sideBContent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:scrollbars = "vertical"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
+        <!-- Debate Title -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"/>
+
+        <!-- Side Titles -->
+        <LinearLayout
+            android:id="@+id/sideTitles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <!-- Side A Title -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sideATitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+            <!-- Side B Title -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/sideBTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
+        </LinearLayout>
+
+        <!-- Side Content -->
+        <LinearLayout
+            android:id="@+id/sideContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/sideTitles"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/sideAContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/sideBContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+
+        <!-- Supplemental Information -->
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/supplementalInfoTitle"
-            android:text="Supplemental Information"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"/>
-        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/supplementalInfoContent"/>
+            app:layout_constraintTop_toBottomOf="@id/sideContent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
-    </LinearLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/supplementalInfoContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/supplementalInfoTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAppearance="?attr/textAppearanceBodyMedium"/>
 
-
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

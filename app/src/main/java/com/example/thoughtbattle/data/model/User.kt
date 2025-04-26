@@ -22,10 +22,11 @@ data class User(
 
     val debateHistory: List<String> = emptyList(),
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val debateRecommendation:String = "",
+    val uuid : String = ""
 ) {
     init{
-        FirebaseRepository.createUser(this)
     }
 
 }
